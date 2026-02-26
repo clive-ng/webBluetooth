@@ -37,8 +37,28 @@
                 hsla(var(--hue), 80%, 50%, 0.3) calc(var(--dist) * 8px),
                 transparent calc(var(--dist) * 8px),
                 transparent calc(var(--dist) * 16px)
+
+
+animation: spin 2s linear infinite; 
+}
+
+/* Defining the spin animation */
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+
+                
+
             );
             transition: background 0.2s ease-out;
+
+            
         }
 
         /* Basic styling for the UI to sit on top of the pattern */
