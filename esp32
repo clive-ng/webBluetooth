@@ -1,0 +1,48 @@
+#include <BLEDevice.h>
+#include <BLEUtils.h>
+#include <BLEServer.h>
+
+// Unique ID for the Museum Exhibit
+#define SERVICE_UUID "4fafc201-1fb5-459e-8fcc-c5c9c331914b"
+
+void setup() {
+  Serial.begin(115200);
+  Serial.println("Starting BLE Museum Beacon...");
+
+  // 1. Initialize the device with a short name for iOS compatibility
+  BLEDevice::init("Dinosaur_Node");
+  BLEServer *pServer = BLEDevice::createServer();
+  BLEService *pService = pServer->createService(SERVICE_UUID);
+  pService->start();
+
+  BLEAdvertising *pAdvertising = BLEDevice::getAdvertising();
+
+  // 2. CREATE A CUSTOM PACKET FOR iOS (Main Advertisement)
+  // This ensures the name fits within Apple's strict 31-byte limit
+  BLEAdvertisementData oAdvertisementData = BLEAdvertisementData();
+  oAdvertisementData.setFlags(0x04); // Tells the phone this is BLE only
+  oAdvertisementData.setName("Dinosaur_Node"); // Force the name into the main packet
+  pAdvertising->setAdvertisementData(oAdvertisementData);
+
+  // 3. Put the bulky 16-byte UUID into the secondary "Scan Response" packet
+  BLEAdvertisementData oScanResponseData = BLEAdvertisementData();
+  oScanResponseData.setCompleteServices(BLEUUID(SERVICE_UUID));
+  pAdvertising->setScanResponseData(oScanResponseData);
+
+  // 4. SPEED UP THE BROADCAST (Update distance quicker)
+  // The ESP32 interval is set in units of 0.625ms.
+  // 0x00A0 (which is 160 in decimal) * 0.625ms = exactly 100ms.
+  // This tells the hardware to scream its location 10 times every single second!
+  pAdvertising->setMinInterval(0x00A0);
+  pAdvertising->setMaxInterval(0x00A0);
+
+  // 5. Start broadcasting
+  pAdvertising->start();
+  Serial.println("Beacon is now broadcasting blazing fast as 'Dinosaur_Node'!");
+}
+
+void loop() {
+  // The ESP32 handles the Bluetooth broadcasting automatically in the background,
+  // so we can just leave the main loop mostly empty.
+  delay(2000);
+}
