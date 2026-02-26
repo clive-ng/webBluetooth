@@ -1,8 +1,10 @@
-index.html is the code for Figma
-
-old.html is the code for orginal
-
 esp.text is the code for esp32
+
+old.html is the original working code for the URGY one. (including JS, HTML CSSS)
+
+index.html is the code for Figma (including JS, HTML)
+
+index.css is the modifed CSS code from Fimga (.css only)
 
 Resources
 
